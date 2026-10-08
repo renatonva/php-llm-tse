@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS log_tokens (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    provedor VARCHAR(100) NULL,
+    modelo VARCHAR(100) NULL,
+    tokens_entrada BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    tokens_saida BIGINT UNSIGNED NOT NULL DEFAULT 0,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_log_tokens_criado_em (criado_em)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

@@ -1,0 +1,8 @@
+vendor/
+data/
+*.csv
+*.zip
+logs/
+*.log
+.git/
+.env

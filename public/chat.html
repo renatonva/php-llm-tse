@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agente Eleitoral</title>
+ <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<main>
+<h1>Agente Eleitoral</h1>
+<div id="log" aria-live="polite"></div>
+<div id="status" role="status"></div>
+<form id="form">
+  <input id="message" type="text" placeholder="Pergunte algo..." autocomplete="off" required maxlength="500">
+  <button type="submit">Procurar</button>
+</form>
+</main>
+<script>
+  const log = document.getElementById('log');
+  const form = document.getElementById('form');
+  const input = document.getElementById('message');
+  const status = document.getElementById('status');
+  let sessionId = sessionStorage.getItem('election-chat-session');
+  if (!sessionId) {
+    sessionId = crypto.randomUUID().replaceAll('-', '');
+    sessionStorage.setItem('election-chat-session', sessionId);
+  }
+
+  function append(label, text, kind) {
+    const entry = document.createElement('div');
+    entry.className = 'entry ' + kind;
+    entry.textContent = label + ': ' + text;
+    log.append(entry);
+    log.scrollTop = log.scrollHeight;
+  }
+
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const message = input.value;
+    if (!message.trim() || message.length > 500) {
+      return;
+    }
+    append('Você', message, 'user');
+    input.value = '';
+    input.disabled = true;
+    status.textContent = 'Digitando...';
+
+    try {
+      const response = await fetch('/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, session_id: sessionId }),
+      });
+      const data = await response.json();
+      append('Agente', response.ok ? data.answer : data.error, response.ok ? 'assistant' : 'assistant error');
+    } catch (error) {
+      append('Agente', 'Conexão não estabelecida. Tente novamente.', 'assistant error');
+    } finally {
+      status.textContent = '';
+      input.disabled = false;
+      input.focus();
+    }
+  });
+</script>
+</body>
+</html>

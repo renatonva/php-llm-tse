@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS partidos (
+    id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    sigla VARCHAR(32) NOT NULL,
+    nome VARCHAR(255) NOT NULL,
+    criado_em TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    KEY idx_partidos_sigla (sigla)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
